@@ -20,7 +20,6 @@ static const char *TAG = "DHT22";
 
 static esp_mqtt_client_handle_t mqtt_client;
 
-// Wi-Fi Event Handler
 static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data) {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         esp_wifi_connect();
@@ -33,7 +32,6 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t e
     }
 }
 
-// Initialize Wi-Fi
 void wifi_init(void) {
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_netif_init());
@@ -57,7 +55,6 @@ void wifi_init(void) {
     ESP_ERROR_CHECK(esp_wifi_start());
 }
 
-// MQTT Event Handler
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data) {
     esp_mqtt_event_handle_t event = event_data;
     esp_mqtt_client_handle_t client = event->client;
@@ -74,7 +71,6 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     }
 }
 
-// Initialize MQTT
 void mqtt_init(void) {
     esp_mqtt_client_config_t mqtt_cfg = {
         .broker.address.uri = MQTT_BROKER_URI,
@@ -85,16 +81,15 @@ void mqtt_init(void) {
     esp_mqtt_client_start(mqtt_client);
 }
 
-// DHT Task
 void dht_task(void *pvParameter) {
     int temperature = 0, humidity = 0;
     wifi_init();
-    vTaskDelay(pdMS_TO_TICKS(5000));  // Delay to allow Wi-Fi & MQTT to stabilize
+    vTaskDelay(pdMS_TO_TICKS(5000)); 
     
     mqtt_init();
     init_dht(DHT_PIN);
 
-    while (1) {// Before reading data, disable interrupts
+    while (1) {
         if (dht_read_data(DHT_PIN, &humidity, &temperature) == ESP_OK) {
             ESP_LOGI(TAG, "Temperature: %d°C, Humidity: %d%%", temperature, humidity);
 
@@ -108,7 +103,7 @@ void dht_task(void *pvParameter) {
             ESP_LOGE(TAG, "Failed to read from DHT22 sensor!");
         }
 
-        vTaskDelay(pdMS_TO_TICKS(2000));  // Read every 2 seconds
+        vTaskDelay(pdMS_TO_TICKS(2000)); 
     }
 }
 
