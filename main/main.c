@@ -13,10 +13,10 @@
 #define DHT_PIN GPIO_NUM_4 
 static const char *TAG = "DHT22";
 
-#define WIFI_SSID "Freebox-67A08E"
-#define WIFI_PASSWORD "ktmdkq4rh9q2zdfvq5w3cm"
+#define WIFI_SSID ""
+#define WIFI_PASSWORD ""
 
-#define MQTT_BROKER_URI "mqtt://192.168.1.6"  // Change this to your computer's IP
+#define MQTT_BROKER_URI "mqtt://192.168.1.6"
 
 static esp_mqtt_client_handle_t mqtt_client;
 
